@@ -142,7 +142,7 @@ const app = {
                 transform: 'rotate(360deg)'
             }
         ], {
-            duration: 10000, //Quay 10s
+            duration: 10000, //Quay 1 vòng 10s
             iterations: Infinity, //Lặp lại vô hạn
         })
         cdThumbAnimate.pause();
@@ -155,6 +155,7 @@ const app = {
                 cd.style.opacity = newCdWidth / cdWidth;
             } else {
                 cd.style.width = 0;
+                cd.style.opacity = 0;
             }
         }
         // Xử lý khi click play
@@ -190,12 +191,12 @@ const app = {
         // Xử lý khi tua bài hát
         progress.onchange = function () {
             // % bài hát khi tua
-            audio.pause();
+            progress.onclick = function () {
+                audio.pause();
+                audio.play();
+            }
             const seekTime = progress.value * audio.duration / 100;
             audio.currentTime = seekTime;
-            setTimeout(function () {
-                audio.play();
-            }, 100);
         }
         // Xử lý khi nextSong
         nextBtn.onclick = function () {
@@ -250,7 +251,7 @@ const app = {
                 e.target.closest(): trả về element chính nó hoặc cha của nó
                 Nếu k tìm thấy thì trả về null
             */
-            const songNode = e.target.closest('.song');
+            const songNode = e.target.closest('.song:not(.active)');
             // console.log(e.target.closest('.song:not(.active)'));
             // console.log(e.target.closest('.song'));
             if (songNode || e.target.closest('.option')) {
@@ -268,24 +269,21 @@ const app = {
         }
         // Xử lý mute
         mute.onclick = function () {
+            audio.muted = !audio.muted;
             if (audio.muted) {
                 // Khi k muted
-                audio.muted = false;
-                toggleMute.classList.add('fa-volume-up');
-                toggleMute.classList.remove('fa-volume-mute');
-                _this.render();
-            } else {
-                // Khi muted
-                audio.muted = true;
                 toggleMute.classList.remove('fa-volume-up');
                 toggleMute.classList.add('fa-volume-mute');
+            } else {
+                // Khi muted
+                toggleMute.classList.add('fa-volume-up');
+                toggleMute.classList.remove('fa-volume-mute');
             }
         }
         // Xử lý volume change
         volume.onchange = function () {
             const levelVolume = volume.value / 100;
             audio.volume = levelVolume;
-            // console.log(audio.volume);
         }
     },
     loadCurrentSong: function () {
@@ -320,7 +318,6 @@ const app = {
         // Key: scrollIntoView
         $('.song.active').scrollIntoView(
             {
-                behavier: 'smooth',
                 block: 'center'
             }
         );

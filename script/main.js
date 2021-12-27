@@ -189,12 +189,8 @@ const app = {
             }
         }
         // Xử lý khi tua bài hát
-        progress.onchange = function () {
+        progress.oninput = function () {
             // % bài hát khi tua
-            progress.onclick = function () {
-                audio.pause();
-                audio.play();
-            }
             const seekTime = progress.value * audio.duration / 100;
             audio.currentTime = seekTime;
         }
@@ -270,18 +266,19 @@ const app = {
         // Xử lý mute
         mute.onclick = function () {
             audio.muted = !audio.muted;
+            const muteIcon = toggleMute.classList;
             if (audio.muted) {
                 // Khi k muted
-                toggleMute.classList.remove('fa-volume-up');
-                toggleMute.classList.add('fa-volume-mute');
+                muteIcon.remove('fa-volume-up');
+                muteIcon.add('fa-volume-mute');
             } else {
                 // Khi muted
-                toggleMute.classList.add('fa-volume-up');
-                toggleMute.classList.remove('fa-volume-mute');
+                muteIcon.add('fa-volume-up');
+                muteIcon.remove('fa-volume-mute');
             }
         }
         // Xử lý volume change
-        volume.onchange = function () {
+        volume.onclick = function () {
             const levelVolume = volume.value / 100;
             audio.volume = levelVolume;
         }
